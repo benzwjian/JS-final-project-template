@@ -20,19 +20,63 @@ var enemy = {
 	y: 480 - 32,
 	speedX: 0,
 	speedY: -64 / FPS,
+	pathDes: 0,
 	move: function () {
 		this.x += this.speedX;
 		this.y += this.speedY;
+		if (isCollided(enemyPath[this.pathDes].x, enemyPath[this.pathDes].y, this.x, this.y, 64 / FPS, 64 / FPS)) {
+			this.x = enemyPath[this.pathDes].x;
+			this.y = enemyPath[this.pathDes].y;
+			this.pathDes++;
+
+			if (this.x > enemyPath[this.pathDes].x) {
+				this.speedX = -64 / FPS;
+			} else if (this.x < enemyPath[this.pathDes].x) {
+				this.speedX = 64 / FPS;
+			} else {
+				this.speedX = 0;
+			}
+
+			if (this.y > enemyPath[this.pathDes].y) {
+				this.speedY = -64 / FPS;
+			} else if (this.y < enemyPath[this.pathDes].y) {
+				this.speedY = 64 / FPS;
+			} else {
+				this.speedY = 0;
+			}
+		}
 	}
 }
+
+var enemyPath = [
+    {x:96, y:64},
+    {x:384, y:64},
+    {x:384, y:192},
+    {x:224, y:192},
+    {x:224, y:320},
+    {x:544, y:320},
+    {x:544, y:96}
+];
 
 function draw() {
 	enemy.move();
 	ctx.drawImage(bgImg, 0, 0);
 	ctx.drawImage(enemyImg, enemy.x, enemy.y);
 	ctx.drawImage(towerBtnImg, 640 - 64, 480 - 64, 64, 64);
-	if (isBuilding) ctx.drawImage(towerImg, cursor.x, cursor.y, 32, 32);
+	if (isBuilding) ctx.drawImage(towerImg, cursor.x - 16, cursor.y - 16, 32, 32);
 	ctx.drawImage(towerImg, tower.x, tower.y, 32, 32);
+}
+
+function isCollided(pointX, pointY, targetX, targetY, targetWidth, targetHeight) {
+	if (pointX >= targetX 
+		&& pointX <= targetX + targetWidth 
+		&& pointY >= targetY 
+		&& pointY <= targetY + targetHeight
+	) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 setInterval(draw, 1000 / FPS);
