@@ -14,7 +14,7 @@ var canvas = document.getElementById("game-canvas");
 var ctx = canvas.getContext("2d");
 
 var clock = 0;
-
+var hp = 100;
 var FPS = 60;
 
 function Enemy () {
@@ -96,6 +96,9 @@ var enemyPath = [
 ];
 
 function draw() {
+	ctx.font = "24px Arial";
+	ctx.fillStyle = "white"; // or #fff
+
 	clock++;
 	if (clock % 80 == 0) {
 		var enemy = new Enemy();
@@ -109,6 +112,8 @@ function draw() {
 	ctx.drawImage(towerBtnImg, 640 - 64, 480 - 64, 64, 64);
 	if (isBuilding) ctx.drawImage(towerImg, cursor.x - 16, cursor.y - 16, 32, 32);
 	ctx.drawImage(towerImg, tower.x, tower.y, 32, 32);
+
+	ctx.fillText("HP:"+hp, 16, 32);
 }
 
 function isCollided(pointX, pointY, targetX, targetY, targetWidth, targetHeight) {
