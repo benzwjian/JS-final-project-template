@@ -13,8 +13,45 @@ towerImg.src = "images/tower.png";
 var canvas = document.getElementById("game-canvas");
 var ctx = canvas.getContext("2d");
 
+var clock = 0;
+
 var FPS = 60;
 
+function Enemy () {
+	this.x = 96;
+	this.y = 480 - 32;
+	this.speedX = 0;
+	this.speedY = -64 / FPS;
+	this.pathDes = 0;
+	this.move = function () {
+		this.x += this.speedX;
+		this.y += this.speedY;
+		if (isCollided(enemyPath[this.pathDes].x, enemyPath[this.pathDes].y, this.x, this.y, 64 / FPS, 64 / FPS)) {
+			this.x = enemyPath[this.pathDes].x;
+			this.y = enemyPath[this.pathDes].y;
+			this.pathDes++;
+
+			if (this.x > enemyPath[this.pathDes].x) {
+				this.speedX = -64 / FPS;
+			} else if (this.x < enemyPath[this.pathDes].x) {
+				this.speedX = 64 / FPS;
+			} else {
+				this.speedX = 0;
+			}
+
+			if (this.y > enemyPath[this.pathDes].y) {
+				this.speedY = -64 / FPS;
+			} else if (this.y < enemyPath[this.pathDes].y) {
+				this.speedY = 64 / FPS;
+			} else {
+				this.speedY = 0;
+			}
+		}
+	}
+}
+var enemies = [];
+enemies.push(new Enemy());
+/*
 var enemy = {
 	x: 96,
 	y: 480 - 32,
@@ -47,7 +84,7 @@ var enemy = {
 		}
 	}
 }
-
+*/
 var enemyPath = [
     {x:96, y:64},
     {x:384, y:64},
@@ -59,9 +96,16 @@ var enemyPath = [
 ];
 
 function draw() {
-	enemy.move();
+	clock++;
+	if (clock % 80 == 0) {
+		var enemy = new Enemy();
+		enemies.push(enemy);
+	};
 	ctx.drawImage(bgImg, 0, 0);
-	ctx.drawImage(enemyImg, enemy.x, enemy.y);
+	for (var i = 0; i < enemies.length; i++) {
+		enemies[i].move();
+		ctx.drawImage(enemyImg, enemies[i].x, enemies[i].y);
+	}
 	ctx.drawImage(towerBtnImg, 640 - 64, 480 - 64, 64, 64);
 	if (isBuilding) ctx.drawImage(towerImg, cursor.x - 16, cursor.y - 16, 32, 32);
 	ctx.drawImage(towerImg, tower.x, tower.y, 32, 32);
