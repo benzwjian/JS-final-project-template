@@ -10,6 +10,9 @@ towerBtnImg.src = "images/tower-btn.png";
 var towerImg = document.createElement("img");
 towerImg.src = "images/tower.png";
 
+var crosshairImg = document.createElement("img");
+crosshairImg.src = "images/crosshair.png";
+
 var canvas = document.getElementById("game-canvas");
 var ctx = canvas.getContext("2d");
 
@@ -125,6 +128,13 @@ function draw() {
 	ctx.drawImage(towerImg, tower.x, tower.y, 32, 32);
 
 	ctx.fillText("HP:"+hp, 16, 32);
+
+	//尋找目標enemy
+	tower.searchEnemy();
+	if (tower.aimingEnemyId !== null) {
+	    var id = tower.aimingEnemyId;
+	    ctx.drawImage(crosshairImg, enemies[id].x, enemies[id].y);
+	}
 }
 
 function isCollided(pointX, pointY, targetX, targetY, targetWidth, targetHeight) {
@@ -148,7 +158,20 @@ var cursor = {
 
 var tower = {
 	x: -64,
-	y: -64
+	y: -64,
+	range: 96,
+	aimingEnemyId: null,
+	searchEnemy: function () {
+		for (var i = 0; i < enemies.length; i++) {
+			var distance = Math.sqrt(Math.pow(this.x - enemies[i].x, 2) + Math.pow(this.y - enemies[i].y ,2));
+			if (distance < this.range) {
+				this.aimingEnemyId = i;
+				return;
+			}
+		}
+		//如果enemy都沒有在範圍裡面,會到這行,清除鎖定的目標
+		this.aimingEnemyId = null;
+	}
 }
 
 var isBuilding = false;
