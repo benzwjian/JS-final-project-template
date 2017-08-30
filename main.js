@@ -113,8 +113,12 @@ function draw() {
 	};
 	ctx.drawImage(bgImg, 0, 0);
 	for (var i = 0; i < enemies.length; i++) {
-		enemies[i].move();
-		ctx.drawImage(enemyImg, enemies[i].x, enemies[i].y);
+		if (enemies[i].hp == 0) {
+			enemies.splice(i, 1);
+		} else {
+			enemies[i].move();
+			ctx.drawImage(enemyImg, enemies[i].x, enemies[i].y);
+		}
 	}
 	ctx.drawImage(towerBtnImg, 640 - 64, 480 - 64, 64, 64);
 	if (isBuilding) ctx.drawImage(towerImg, cursor.x - 16, cursor.y - 16, 32, 32);
