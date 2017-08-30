@@ -23,28 +23,35 @@ function Enemy () {
 	this.speedX = 0;
 	this.speedY = -64 / FPS;
 	this.pathDes = 0;
+	this.hp = 5; //以後會根據等級來決定hp值
 	this.move = function () {
 		this.x += this.speedX;
 		this.y += this.speedY;
 		if (isCollided(enemyPath[this.pathDes].x, enemyPath[this.pathDes].y, this.x, this.y, 64 / FPS, 64 / FPS)) {
-			this.x = enemyPath[this.pathDes].x;
-			this.y = enemyPath[this.pathDes].y;
-			this.pathDes++;
 
-			if (this.x > enemyPath[this.pathDes].x) {
-				this.speedX = -64 / FPS;
-			} else if (this.x < enemyPath[this.pathDes].x) {
-				this.speedX = 64 / FPS;
+			if (this.pathDes === enemyPath.length - 1) { //判斷是否碰到樹
+				this.hp = 0; //enemy的hp變成0
+				hp -= 10; //樹的hp減10
 			} else {
-				this.speedX = 0;
-			}
+				this.x = enemyPath[this.pathDes].x;
+				this.y = enemyPath[this.pathDes].y;
+				this.pathDes++;
 
-			if (this.y > enemyPath[this.pathDes].y) {
-				this.speedY = -64 / FPS;
-			} else if (this.y < enemyPath[this.pathDes].y) {
-				this.speedY = 64 / FPS;
-			} else {
-				this.speedY = 0;
+				if (this.x > enemyPath[this.pathDes].x) {
+					this.speedX = -64 / FPS;
+				} else if (this.x < enemyPath[this.pathDes].x) {
+					this.speedX = 64 / FPS;
+				} else {
+					this.speedX = 0;
+				}
+
+				if (this.y > enemyPath[this.pathDes].y) {
+					this.speedY = -64 / FPS;
+				} else if (this.y < enemyPath[this.pathDes].y) {
+					this.speedY = 64 / FPS;
+				} else {
+					this.speedY = 0;
+				}
 			}
 		}
 	}
